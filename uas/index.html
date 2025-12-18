@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Login PBO</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f0f2f5; }
+        .card { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 300px; text-align: center; }
+        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .hidden { display: none; }
+        #userInfo { color: #28a745; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="card" id="loginPage">
+        <h2>Login</h2>
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="authApp.handleLogin()">Login</button>
+    </div>
+
+    <div class="card hidden" id="dashboardPage">
+        <h2>Dashboard</h2>
+        <p id="greeting"></p>
+        <button onclick="authApp.handleLogout()" style="background: #dc3545;">Logout</button>
+    </div>
+
+    <script>
+        // --- KONSEP PBO: Class User ---
+        class User {
+            constructor(username, password, role) {
+                this.username = username;
+                this.password = password;
+                this.role = role;
+            }
+        }
+
+        // --- KONSEP PBO: Class AuthSystem ---
+        class AuthSystem {
+            constructor() {
+                this.initDatabase();
+            }
+
+            // Simulasi Database di LocalStorage
+            initDatabase() {
+                const existingData = localStorage.getItem('userDB');
+                if (!existingData) {
+                    const initialUsers = [
+                        new User('admin', 'admin123', 'Administrator'),
+                        new User('budi', 'budi789', 'Siswa'),
+                        new User('sari', 'sari456', 'Guru')
+                    ];
+                    localStorage.setItem('userDB', JSON.stringify(initialUsers));
+                }
+            }
+
+            // Fungsi Login
+            login(username, password) {
+                const db = JSON.parse(localStorage.getItem('userDB'));
+                // Mencari user yang cocok
+                const userFound = db.find(u => u.username === username && u.password === password);
+                
+                if (userFound) {
+                    return userFound;
+                } else {
+                    return null;
+                }
+            }
+        }
+
+        // --- Logika UI (Main App) ---
+        class App {
+            constructor() {
+                this.auth = new AuthSystem();
+            }
+
+            handleLogin() {
+                const userVal = document.getElementById('username').value;
+                const passVal = document.getElementById('password').value;
+
+                const user = this.auth.login(userVal, passVal);
+
+                if (user) {
+                    this.showDashboard(user);
+                } else {
+                    alert("Gagal Login! Username atau Password salah.");
+                }
+            }
+
+            showDashboard(user) {
+                document.getElementById('loginPage').classList.add('hidden');
+                document.getElementById('dashboardPage').classList.remove('hidden');
+                document.getElementById('greeting').innerText = `Hai, ${user.username}!\nRole Anda: ${user.role}`;
+            }
+
+            handleLogout() {
+                document.getElementById('loginPage').classList.remove('hidden');
+                document.getElementById('dashboardPage').classList.add('hidden');
+                document.getElementById('username').value = '';
+                document.getElementById('password').value = '';
+            }
+        }
+
+        // Inisialisasi Aplikasi
+        const authApp = new App();
+    </script>
+</body>
+</html>
