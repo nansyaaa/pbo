@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Aplikasi Login</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #2196f3, #64b5f6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .box {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            width: 320px;
+            text-align: center;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 10px;
+            background: #fff3cd; /* cream */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .btn-login:hover {
+            background: #ffe8a1;
+        }
+
+        .btn-cancel {
+            width: 100%;
+            padding: 10px;
+            background: #f8d7da;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        .btn-cancel:hover {
+            background: #f5b7c1;
+        }
+    </style>
+</head>
+<body>
+
+<div class="box" id="loginBox">
+    <h2>Login</h2>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+
+    <button class="btn-login" onclick="login()">Login</button>
+    <button class="btn-cancel" onclick="cancel()">Cancel</button>
+</div>
+
+<div class="box" id="userBox" style="display:none;">
+    <h2 id="welcome"></h2>
+    <p>Selamat datang di halaman user</p>
+    <button class="btn-cancel" onclick="logout()">Logout</button>
+</div>
+
+<script>
+    // Database user (JSON)
+    const users = [
+        { username: "admin", password: "202301110038" },
+        { username: "caca", password: "nansya" },
+        { username: "bunga", password: "aureyna" }
+    ];
+
+    // Simpan ke LocalStorage
+    localStorage.setItem("users", JSON.stringify(users));
+
+    function login() {
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+
+        const dataUsers = JSON.parse(localStorage.getItem("users"));
+
+        const user = dataUsers.find(
+            u => u.username === username && u.password === password
+        );
+
+        if (user) {
+            localStorage.setItem("loginUser", username);
+            showUser();
+        } else {
+            alert("Gagal login! Username atau password salah.");
+        }
+    }
+
+    function showUser() {
+        const loginUser = localStorage.getItem("loginUser");
+        if (loginUser) {
+            document.getElementById("loginBox").style.display = "none";
+            document.getElementById("userBox").style.display = "block";
+            document.getElementById("welcome").innerText = "Hai, " + loginUser;
+        }
+    }
+
+    function logout() {
+        localStorage.removeItem("loginUser");
+        location.reload();
+    }
+
+    function cancel() {
+        document.getElementById("username").value = "";
+        document.getElementById("password").value = "";
+    }
+
+    // Auto login jika sudah login
+    showUser();
+</script>
+
+</body>
+</html>
