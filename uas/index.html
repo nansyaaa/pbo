@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Aplikasi Login LocalStorage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            height: 100vh;
+            background: linear-gradient(135deg, #f3e5ab, #f7c8a0, #e8b4bc);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            width: 320px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            animation: fadeIn 0.8s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #444;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #e8b4bc;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            background: #f3e5ab; /* cream */
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #e6d48f;
+        }
+
+        .user-page {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card" id="loginPage">
+    <h2>Login</h2>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+</div>
+
+<div class="card user-page" id="userPage" style="display:none;">
+    <h2 id="welcomeText"></h2>
+    <button onclick="logout()">Logout</button>
+</div>
+
+<script>
+    // Inisialisasi database user
+    if (!localStorage.getItem("users")) {
+        const users = [
+            { username: "admin", password: "202301110038" },
+            { username: "caca", password: "nansya" },
+            { username: "bunga", password: "aureyna" }
+        ];
+        localStorage.setItem("users", JSON.stringify(users));
+    }
+
+    function login() {
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+
+        const users = JSON.parse(localStorage.getItem("users"));
+        const user = users.find(
+            u => u.username === username && u.password === password
+        );
+
+        if (user) {
+            document.getElementById("loginPage").style.display = "none";
+            document.getElementById("userPage").style.display = "block";
+            document.getElementById("welcomeText").innerText =
+                "Hai, " + user.username;
+        } else {
+            alert("Login gagal");
+        }
+    }
+
+    function logout() {
+        document.getElementById("loginPage").style.display = "block";
+        document.getElementById("userPage").style.display = "none";
+        document.getElementById("username").value = "";
+        document.getElementById("password").value = "";
+    }
+</script>
+
+</body>
+</html>
