@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Aplikasi Login LocalStorage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            width: 300px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 15px;
+            background: #f3e5ab; /* cream */
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #e6d48f;
+        }
+
+        .user-page {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card" id="loginPage">
+    <h2>Login</h2>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+</div>
+
+<div class="card user-page" id="userPage" style="display:none;">
+    <h2 id="welcomeText"></h2>
+    <button onclick="logout()">Logout</button>
+</div>
+
+<script>
+    // Inisialisasi database user ke localStorage
+    if (!localStorage.getItem("users")) {
+        const users = [
+            { username: "admin", password: "202301110038" },
+            { username: "caca", password: "nansya" },
+            { username: "bunga", password: "aureyna" }
+        ];
+        localStorage.setItem("users", JSON.stringify(users));
+    }
+
+    function login() {
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+
+        const users = JSON.parse(localStorage.getItem("users"));
+
+        const user = users.find(
+            u => u.username === username && u.password === password
+        );
+
+        if (user) {
+            document.getElementById("loginPage").style.display = "none";
+            document.getElementById("userPage").style.display = "block";
+            document.getElementById("welcomeText").innerText =
+                "Hai, " + user.username;
+        } else {
+            alert("Login gagal");
+        }
+    }
+
+    function logout() {
+        document.getElementById("loginPage").style.display = "block";
+        document.getElementById("userPage").style.display = "none";
+        document.getElementById("username").value = "";
+        document.getElementById("password").value = "";
+    }
+</script>
+
+</body>
+</html>
